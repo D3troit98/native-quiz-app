@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
-
+import 'react-native-reanimated'
 import React from 'react'
 import { store } from './store';
 import { Provider } from 'react-redux'
@@ -18,10 +18,3 @@ const App = () => {
 }
 
 export default App
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 40,
-    paddingHorizontal: 16,
-  }
-})

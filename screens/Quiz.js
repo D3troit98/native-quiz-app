@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Image, Animated, Easing } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useSelector, useDispatch } from 'react-redux'
 import { setOption } from '../features/counterSlice';
 import Sudoku from "../assets/astronaut-in-tea-break.gif"
+
 const Quiz = ({ navigation }) => {
     const [questions, setQuestions] = useState();
     const [questionNo, setQuestionNo] = useState(0)
@@ -13,8 +14,9 @@ const Quiz = ({ navigation }) => {
 
 
     const count = useSelector((state) => state.counter.options)
-
     const dispatch = useDispatch()
+
+
     useEffect(() => {
         const getQuiz = async () => {
             const url = 'https://opentdb.com/api.php?amount=10&category=31&type=multiple&encode=url3986';
@@ -27,15 +29,22 @@ const Quiz = ({ navigation }) => {
         getQuiz();
     }, [])
 
+
+
     const handleNextPress = () => {
-        console.log(count)
         if (count === questions[questionNo].correct_answer) {
             setScore((prevScore) => prevScore + 10)
+        } if (questionNo === 9) {
+            navigation.navigate("Result", {
+                score: score
+            })
+        } else {
+            setQuestionNo((prevQuestionNo) => prevQuestionNo + 1)
+            setOptions(generateOptionsAndShuffle(questions[questionNo + 1]))
+            dispatch(setOption(''))
+            setSelectedButton('')
         }
-        setQuestionNo((prevQuestionNo) => prevQuestionNo + 1)
-        setOptions(generateOptionsAndShuffle(questions[questionNo + 1]))
-        dispatch(setOption(''))
-        setSelectedButton('')
+
 
     }
 
@@ -56,23 +65,14 @@ const Quiz = ({ navigation }) => {
     }
 
     const generateOptionsAndShuffle = (_question) => {
-
         const options = [..._question.incorrect_answers]
         options.push(_question.correct_answer)
         shuffleArray(options)
         return options
-
     }
 
     const handleSelectedOption = (_option) => {
-        //     console.log(_option)
-        //    setGotAnswer(_option)
-        //     console.log(gotAnswer)
-
-        //     console.log(gotAnswer === questions[questionNo].correct_answer)
-
         dispatch(setOption(_option))
-
     }
 
 
